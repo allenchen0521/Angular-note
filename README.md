@@ -135,3 +135,39 @@
     }
    ```
 
+### Form setValue vs patchValue
+
+1. 表單如何修改預設值
+
+   `app.component.html`
+
+   ```markup
+    <!-- 表單結構承上 -->
+    <button type="button" class="btn btn-primary" (click)="suggestUserName()">Suggest an Username</button>
+   ```
+
+   `app.component.ts`
+
+   ```typescript
+    export class AppComponent {
+        @ViewChild('form') signUpForm: NgForm;
+
+        suggestUserName() {
+            // setValue 需要全部覆寫 FormControl
+            this.signUpForm.setValue({
+                username: 'foo',
+                email: 'foo@gmail.com',
+                secret: 'pet',
+                answer: 'fooboo',
+                gender: 'female'
+            });
+
+            // patchValue 可以覆寫特定內容, 需要透過 NgForm.form 物件來操作
+            this.signUpForm.form.patchValue({
+                username: 'foo',
+                email: 'foo@gmail.com'
+            })
+        }
+    }
+   ```
+
