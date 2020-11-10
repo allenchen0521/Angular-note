@@ -59,7 +59,7 @@
 
    `app.component.html`
 
-   ```markup
+   ```html
     <!-- form 標籤使用 formGroup directive 對應自訂的 signUpForm FormGroup -->
     <form [formGroup]="signUpForm">
         <!-- 使用 formControlName directive 對應 signUpForm 自訂的 FormControl -->
@@ -80,7 +80,7 @@
 
    `app.component.html`
 
-   ```markup
+   ```html
     <!-- Angular 使用 ngSubmit 事件模擬 formSubmit, 因此我們不會在 form 標籤加入 action 屬性 -->
     <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
    ```
@@ -117,7 +117,7 @@
 
    `app.component.html`
 
-   ```markup
+   ```html
     <!-- 由於 ngModel 會產生 ng-valid/ng-touched 等等常用屬性, 可以儲存成變數動態顯示錯誤訊息 -->
     <input type="text" id="username" class="form-control"
         ngModel
@@ -140,7 +140,7 @@
 
    `app.component.html`
 
-   ```markup
+   ```html
     <!-- 下拉選單如果需要預設值 ngModel 可以使用 one-way-binding -->
     <select id="secret" class="form-control"
         [ngModel]="defaultQuestion"
@@ -151,7 +151,7 @@
 
    `app.component.html`
 
-   ```markup
+   ```html
     <!-- 需要立即檢核或是動態顯示輸入內容可以使用 two-way-binding -->
     <!-- 建立 textarea 透過 two-way-binding 方式立即顯示輸入的文字內容 -->
     <div class="form-group">
@@ -178,7 +178,7 @@
 
    `app.component.html`
 
-   ```markup
+   ```html
     <!-- 表單結構承上 -->
     <button type="button" class="btn btn-primary" (click)="suggestUserName()">Suggest an Username</button>
    ```

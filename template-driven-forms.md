@@ -25,7 +25,7 @@
 
 2. 設定表單 FormControl
 
-   ```markup
+   ```html
     <!-- ngModel 告訴 Angular 這是需要被設定成 FormControl -->
     <!-- name="username" Name of FormControl -->
     <input type="text" id="username" class="form-control"
@@ -37,7 +37,7 @@
 
    `app.component.html`
 
-   ```markup
+   ```html
     <!-- Angular 使用 ngSubmit 事件模擬 formSubmit, 因此我們不會在 form 標籤加入 action 屬性 -->
     <!-- Angular 使用 ngForm 自動將表單轉換成 JavaScript Object -->
     <form (ngSubmit)="onSubmit(form)" #form="ngForm">
@@ -55,7 +55,7 @@
 
    `app.component.html`
 
-   ```markup
+   ```html
     <!-- 新增 required 屬性, Angular 會透過 ngModel 自動驗證填入值是否合法, 動態加入 ng-invalid class -->
     <input type="text" id="username" class="form-control"
         ngModel
@@ -80,7 +80,7 @@
 
    `app.component.html`
 
-   ```markup
+   ```html
     <!-- 由於 ngModel 會產生 ng-valid/ng-touched 等等常用屬性, 可以儲存成變數動態顯示錯誤訊息 -->
     <input type="text" id="username" class="form-control"
         ngModel
@@ -103,7 +103,7 @@
 
    `app.component.html`
 
-   ```markup
+   ```html
     <!-- 下拉選單如果需要預設值 ngModel 可以使用 one-way-binding -->
     <select id="secret" class="form-control"
         [ngModel]="defaultQuestion"
@@ -114,7 +114,7 @@
 
    `app.component.html`
 
-   ```markup
+   ```html
     <!-- 需要立即檢核或是動態顯示輸入內容可以使用 two-way-binding -->
     <!-- 建立 textarea 透過 two-way-binding 方式立即顯示輸入的文字內容 -->
     <div class="form-group">
@@ -141,7 +141,7 @@
 
    `app.component.html`
 
-   ```markup
+   ```html
     <!-- 表單結構承上 -->
     <button type="button" class="btn btn-primary" (click)="suggestUserName()">Suggest an Username</button>
    ```
