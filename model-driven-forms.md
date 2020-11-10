@@ -39,8 +39,8 @@
    `app.component.ts`
 
    ```typescript
-    import { OnInit } from '@angular/core';
-    import { FormGroup FormControl } from '@angular/forms';
+    import { Component, OnInit } from '@angular/core';
+    import { FormGroup, FormControl } from '@angular/forms';
 
     export class AppComponent implements OnInit {
         signUpForm: FormGroup;
@@ -99,18 +99,56 @@
    `app.component.ts`
 
    ```typescript
-    import { OnInit } from '@angular/core';
-    import { FormGroup FormControl } from '@angular/forms';
+    import { Component, OnInit } from '@angular/core';
+    import { FormGroup, FormControl } from '@angular/forms';
+
+    export class AppComponent implements OnInit {
+        genders = ['male', 'female'];
+        signupForm: FormGroup;
+
+        ngOnInit() {
+            this.signupForm = new FromGroup({
+                'username': new FormControl(null, Validators.required),
+                'email': new FormControl(null, [Validators.required, Validators.email]),
+                'gender': new FormControl(null)
+            });
+        }
+
+    }
    ```
 
-   `app.component.css`
+   `app.component.html`
 
-   ```css
-    /* 針對 ngModel 動態產生的 class 改變 border 顏色 */
-    input.ng-invalid { border: 1px solid red };
+   ```html
+    <span *ngIf="!signupForm.get('username').valid && signupForm.get('username').touched"
+        class="help-block">Please enter a valid username!
+    </span>
+   ```
 
-    /* 但如上會進入畫面即產生紅框不合法, 所以可以加上 ng-touched 讓 FormControl 被點擊過才驗證 */
-    input.ng-invalid.ng-touched { border: 1px solid red };
+   **檢視所有錯誤訊息**
+
+   ```html
+   <pre>
+       signupForm.get('email').value = {{ signupForm.get('email').value }}
+       <!-- 欄位是否合法 -->
+       signupFrom.get('email).valid = {{ signupFrom.get('email').valid }}
+       signupFrom.get('email).invalid = {{ signupFrom.get('email').invalid }}
+
+       <!-- 欄位是否異動 -->
+       signupFrom.get('email).pristine = {{ signupFrom.get('email').pristine }}
+       signupFrom.get('email).dirty = {{ signupFrom.get('email').dirty }}
+
+       <!-- 欄位是否觸碰過 -->
+       signupFrom.get('email).touched = {{ signupFrom.get('email').touched }}
+       signupFrom.get('email).untouched = {{ signupFrom.get('email').untouched }}
+
+       <!-- 欄位是否啟用 -->
+       signupFrom.get('email).enabled = {{ signupFrom.get('email').enabled }}
+       signupFrom.get('email).disabled = {{ signupFrom.get('email').disabled }}
+
+       <!-- 欄位 errors 物件 -->
+       signupFrom.get('email).errors = {{ signupFrom.get('email').errors | json }}
+   </pre>
    ```
 
 5. Outputting Validation Error Messages

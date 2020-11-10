@@ -61,6 +61,10 @@
         ngModel
         name="username"
         required>
+    <input type="email" class="form-control"
+        #tEmail="ngModel"
+        name="email"
+        required email>
 
     <!-- button 可以透過 propertyp binding 是否可以點擊 -->
     <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Submit</button>
@@ -74,6 +78,23 @@
 
     /* 但如上會進入畫面即產生紅框不合法, 所以可以加上 ng-touched 讓 FormControl 被點擊過才驗證 */
     input.ng-invalid.ng-touched { border: 1px solid red };
+   ```
+
+   **檢視所有錯誤訊息**
+
+   ```html
+   <pre>
+       tEmail.value = {{ tEmail.value }}
+       tEmail.valid = {{ tEmail.valid }}
+       tEmail.invalid = {{ tEmail.invalid }}
+       tEmail.pristine = {{ tEmail.pristine }}
+       tEmail.dirty = {{ tEmail.dirty }}
+       tEmail.touched = {{ tEmail.touched }}
+       tEmail.untouched = {{ tEmail.untouched }}
+       tEmail.enabled = {{ tEmail.enabled }}
+       tEmail.disabled = {{ tEmail.disabled }}
+       tEmail.errors = {{ tEmail.errors | json }}
+   </pre>
    ```
 
 5. Outputting Validation Error Messages
