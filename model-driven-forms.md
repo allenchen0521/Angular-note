@@ -100,7 +100,7 @@
 
    ```typescript
     import { Component, OnInit } from '@angular/core';
-    import { FormGroup, FormControl } from '@angular/forms';
+    import { FormGroup, FormControl, Validators } from '@angular/forms';
 
     export class AppComponent implements OnInit {
         genders = ['male', 'female'];
@@ -110,7 +110,7 @@
             this.signupForm = new FromGroup({
                 'username': new FormControl(null, Validators.required),
                 'email': new FormControl(null, [Validators.required, Validators.email]),
-                'gender': new FormControl(null)
+                'gender': new FormControl('male')
             });
         }
 
@@ -120,9 +120,10 @@
    `app.component.html`
 
    ```html
-    <span *ngIf="!signupForm.get('username').valid && signupForm.get('username').touched"
-        class="help-block">Please enter a valid username!
-    </span>
+    <input type="text" id="username" class="form-control"
+        formControlName="username">
+
+    <span class="help-block" *ngIf="!signUpForm.get('username').valid && signUpForm.get('username').touched">Please enter a valid username</span>
    ```
 
    **檢視所有錯誤訊息**
@@ -151,62 +152,174 @@
    </pre>
    ```
 
-5. Outputting Validation Error Messages
+5. Reactive: Creating Custom Validators
 
-   `app.component.html`
+    `app.component.ts`
 
-   ```html
-    <!-- 由於 ngModel 會產生 ng-valid/ng-touched 等等常用屬性, 可以儲存成變數動態顯示錯誤訊息 -->
+    ```typescript
+    import { Component, OnInit } from '@angular/core';
+    import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+    export AppComponent implments OnInit {
+        genders = ['male', 'female'];
+        signupForm: FormGroup;
+        forbiddenUsernames = ['Chris', 'Anna'];
+
+        ngOnInit() {
+            this.signupForm = new FromGroup({
+                // bind(this) 將 this 指向 AppComponent, 否則 this 會指向觸發事件的物件
+                'username': new FormControl(null, [Validators.required, this.forbiddenNames.bind(this)]),
+                'email': new FormControl(null, [Validators.required, Validators.email]),
+                'gender': new FormControl('male')
+            });
+        }
+
+        onSubmit() {
+            console.log(this.signUpForm);
+        }
+
+        forbiddenNames(control: FormControl): {[s: string]: boolean} {
+            if(this.forbiddenUsernames.indexOf(control.value) !== -1) {
+                // FormControl invalid 回傳物件
+                return {'nameIsforbidden': true};
+            }
+
+            // FormControl valid 回傳 null
+            return null;
+        }
+    }
+    ```
+
+    `app.component.html`
+
+    ```html
     <input type="text" id="username" class="form-control"
-        ngModel
-        name="username"
-        #username="ngModel">
+        formControlName="username">
 
-    <span class="help-block" *ngIf="!username.valid && username.touched">Please enter a valid username</span>
-   ```
+    <span *ngIf="!signUpForm.get('username').valid && signUpForm.get('username').touched">
+        <span class="help-block" *ngIf="!signUpForm.get('username').errors['nameIsForbidden']">Please enter a valid username</span>
 
-6. Set Default Values with ngModel Property Binding
+        <span class="help-block" *ngIf="!signUpForm.get('username').errors['required']">The field is required!</span>
+    </span>
+    ```
+
+6. Reative: Grouping Controls
 
    `app.component.ts`
 
    ```typescript
-    export class AppComponent {
-        @ViewChild('form') signUpForm: NgForm;
-        defaultQuestion = 'pet';
+    import { Component, OnInit } from '@angular/core';
+    import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+    export class AppComponent implements OnInit {
+        genders = ['male', 'female'];
+        signUpForm: FormGroup;
+
+        ngOnInit() {
+            this.signUpForm = new FormGroup({
+                'userData': new FormGroup({
+                    'username': new FormControl(null, Validators.required),
+                    'email': new FormControl(null, [Validators.required, Validators.email])
+                }),
+                'gender': new FormControl('male')
+            });
+        }
+
+        onSubmit() {
+            console.log(this.signUpForm);
+        }
     }
    ```
 
    `app.component.html`
 
    ```html
-    <!-- 下拉選單如果需要預設值 ngModel 可以使用 one-way-binding -->
-    <select id="secret" class="form-control"
-        [ngModel]="defaultQuestion"
-        name="secret">
+    <!-- form 標籤使用 formGroup directive 對應自訂的 signUpForm FormGroup -->
+    <form [formGroup]="signUpForm">
+        <!-- 使用 formGroupName directive 對應 signUpForm 自訂的 FormGroup -->
+        <div formGroupname="userData">
+            <input type="text" class="form-control"
+                formControlName="username">
+            <span *ngIf="!signUpForm.get('userData.username').valid && signUpForm.get('userData.username').touched">Please enter a valid username!</span>
+            <input type="text" class="form-control"
+                formControlName="email">
+            <span *ngIf="!signUpForm.get('userData.email').valid && signUpForm.get('userData.email').touched"></span>
+            <span></span>
+        </div>
+        <div class="radio" *ngFor="let gender of genders">
+            <input type="radio"
+                [value]="gender"
+                formControlName="gender">{{ gender }}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
    ```
 
-7. Using ngModel with two-way-binding
+7. Reactive: Arrays of FormControls(FormArray)
 
    `app.component.html`
 
    ```html
-    <!-- 需要立即檢核或是動態顯示輸入內容可以使用 two-way-binding -->
-    <!-- 建立 textarea 透過 two-way-binding 方式立即顯示輸入的文字內容 -->
-    <div class="form-group">
-        <textarea class="form-control"
-            [(ngModel)]="answer"
-            name="answer"></textarea>
-    </div>
-    <p>Your reply: {{ answer }}</p>
+    <!-- form 標籤使用 formGroup directive 對應自訂的 signUpForm FormGroup -->
+    <form [formGroup]="signUpForm">
+        <!-- 使用 formGroupName directive 對應 signUpForm 自訂的 FormGroup -->
+        <div formGroupname="userData">
+            <input type="text" class="form-control"
+                formControlName="username">
+            <span *ngIf="!signUpForm.get('userData.username').valid && signUpForm.get('userData.username').touched">Please enter a valid username!</span>
+            <input type="text" class="form-control"
+                formControlName="email">
+            <span *ngIf="!signUpForm.get('userData.email').valid && signUpForm.get('userData.email').touched"></span>
+        </div>
+        <div class="radio" *ngFor="let gender of genders">
+            <input type="radio"
+                [value]="gender"
+                formControlName="gender">{{ gender }}
+        </div>
+        <div formArrayName="hobbies">
+            <h4>Your Hobbies</h4>
+            <button class="btn btn-default" type="button" (click)="onAddHobby()">Add Hobby</button>
+
+            <div class="form-group" *ngFor="let hobbyControl of signUpForm.get('hobbies').controls; let i = index">
+                <input type="text" class="form-control"
+                    [formControlName]="i">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
    ```
 
    `app.component.ts`
 
    ```typescript
-    export class AppComponent {
-        @ViewChild('form') signUpForm: NgForm;
-        defaultQuestion = 'pet';
-        answer = '';
+    import { Component, OnInit } from '@angular/core';
+    import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+
+    export class AppComponent implements OnInit {
+        genders = ['male', 'female'];
+        signUpForm: FormGroup;
+
+        ngOnInit() {
+            this.signUpForm = new FormGroup({
+                'userData': new FormGroup({
+                    'username': new FormControl(null, Validators.required),
+                    'email': new FormControl(null, [Validators.required, Validators.email])
+                }),
+                'gender': new FormControl('male'),
+                'hobbies': new FormArray([])
+            });
+        }
+
+        onSubmit() {
+            console.log(this.signUpForm);
+        }
+
+        onAddHobby() {
+            const control = new FormControl(null, Validators.required);
+
+            // 必須強制轉型成 FormArray TSLint 才不會產生錯誤
+            (<FormArray>this.signUpform.get('hobbies')).push(control);
+        }
     }
    ```
 
@@ -217,31 +330,45 @@
    `app.component.html`
 
    ```html
-    <!-- 表單結構承上 -->
-    <button type="button" class="btn btn-primary" (click)="suggestUserName()">Suggest an Username</button>
+    
    ```
 
    `app.component.ts`
 
    ```typescript
-    export class AppComponent {
-        @ViewChild('form') signUpForm: NgForm;
+    import { Component, OnInit } from '@angular/core';
+    import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 
-        suggestUserName() {
+    export class AppComponent implements OnInit {
+        genders = ['male', 'female'];
+        signupForm: FormGroup;
+
+        ngOnInit() {
+            this.signUpForm = new FormGroup({
+                'userData': new FormGroup({
+                    'username': new FormControl(null, Validators.required),
+                    'email': new FormControl(null, [Validators.requried, Validators.email])
+                }),
+                'gender': new FormControl('male'),
+                'hobbies': new FormArray([])
+            });
+
             // setValue 需要全部覆寫 FormControl
             this.signUpForm.setValue({
-                username: 'foo',
-                email: 'foo@gmail.com',
-                secret: 'pet',
-                answer: 'fooboo',
-                gender: 'female'
+                'userData': {
+                    'username': 'Max',
+                    'email': 'max@test.com'
+                },
+                'gender': 'male',
+                'hobbies': []
             });
 
             // patchValue 可以覆寫特定內容, 需要透過 NgForm.form 物件來操作
-            this.signUpForm.form.patchValue({
-                username: 'foo',
-                email: 'foo@gmail.com'
-            })
+            this.signUpForm.patchValue({
+                'userData': {
+                    'username': 'Anna'
+                }
+            });
         }
     }
    ```
