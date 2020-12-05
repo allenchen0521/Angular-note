@@ -7,7 +7,7 @@
 1. Import FormModule\(`ctrl+p` app.module.ts\)
 
    ```typescript
-    Import { FormsModule } from '@angular/forms';
+    import { FormsModule } from '@angular/forms';
 
     @NgModule({
         declarations: [

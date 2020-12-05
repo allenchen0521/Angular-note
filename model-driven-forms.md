@@ -7,7 +7,7 @@
    `app.module.ts`
 
    ```typescript
-    Import { ReactiveFormsModule } from '@angular/forms';
+    import { ReactiveFormsModule } from '@angular/forms';
 
     @NgModule({
         declarations: [
